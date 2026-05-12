@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "tsx src/bot.ts",
     "register": "tsx src/register-commands.ts",
-    "diagnose": "tsx src/diagnose-discord.ts"
+    "diagnose": "tsx src/diagnose-discord.ts",
+    "build": "tsc",
+    "start": "node dist/bot.js"
   },
   "dependencies": {
     "discord.js": "latest",
