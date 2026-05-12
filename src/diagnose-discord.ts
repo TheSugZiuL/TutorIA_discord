@@ -9,13 +9,15 @@ if (!token || !clientId || !guildId) {
   throw new Error("Faltam DISCORD_TOKEN, DISCORD_CLIENT_ID ou DISCORD_GUILD_ID no .env");
 }
 
+const discordToken = token;
+
 console.log("ENV CLIENT ID:", clientId);
 console.log("ENV GUILD ID:", guildId);
 console.log("TOKEN EXISTE?", Boolean(token));
 console.log("TOKEN TAMANHO:", token.length);
 
 async function checkApplication() {
-  const rest = new REST({ version: "10" }).setToken(token);
+  const rest = new REST({ version: "10" }).setToken(discordToken);
 
   const app = await rest.get("/oauth2/applications/@me" as `/${string}`) as {
     id: string;
@@ -75,7 +77,7 @@ async function checkGuilds() {
     client.destroy();
   });
 
-  await client.login(token);
+  await client.login(discordToken);
 }
 
 async function main() {

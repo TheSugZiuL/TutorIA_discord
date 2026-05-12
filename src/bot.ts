@@ -413,7 +413,7 @@ ${projectContext}
       const answer = response.output_text?.trim();
 
       if (!answer) {
-        throw new Error("A IA nÃ£o retornou uma resposta vÃ¡lida.");
+        throw new Error("A IA não retornou uma resposta válida.");
       }
 
       await replyLongText(interaction, answer);
