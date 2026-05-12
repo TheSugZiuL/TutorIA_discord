@@ -1,0 +1,20 @@
+{
+  "name": "discord-tutor-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/bot.ts",
+    "register": "tsx src/register-commands.ts",
+    "diagnose": "tsx src/diagnose-discord.ts"
+  },
+  "dependencies": {
+    "discord.js": "latest",
+    "dotenv": "latest",
+    "openai": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
