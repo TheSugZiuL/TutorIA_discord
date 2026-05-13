@@ -2,4 +2,12 @@ node_modules
 .env
 dist
 context-backups/*.md
+data/*.sqlite
+data/*.sqlite-*
 npm-debug.log*
+monitor-dashboard/.vercel
+monitor-dashboard/.wrangler
+monitor-dashboard/.dev.vars*
+monitor-dashboard/dist
+__pycache__/
+*.pyc

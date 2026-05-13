@@ -1,0 +1,15 @@
+{
+  "name": "tutor-monitor-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Read-only monitoring dashboard for the Tutor IA VM.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "check": "node scripts/smoke-check.js"
+  },
+  "license": "MIT"
+}

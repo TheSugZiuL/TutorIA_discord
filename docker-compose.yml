@@ -1,0 +1,26 @@
+services:
+  tutor-dev-bot:
+    build:
+      context: .
+    image: tutor-dev-bot:latest
+    container_name: tutor-dev-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./src/storage:/app/src/storage
+      - ./context-backups:/app/context-backups
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    init: true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

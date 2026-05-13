@@ -1,0 +1,10 @@
+[Unit]
+Description=Tutor IA monitor agent
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/tutor-monitor-agent.env
+ExecStart=/usr/bin/python3 /home/ubuntu/discord-tutor-bot/monitor-agent/monitor-agent.py
+Nice=10

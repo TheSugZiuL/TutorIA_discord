@@ -50,3 +50,7 @@ export function getAuthorizedUserIds(): Set<string> {
 
   return new Set(ids);
 }
+
+export function getSqliteDatabasePath(): string {
+  return process.env.SQLITE_DATABASE_PATH?.trim() || "data/tutor-dev-bot.sqlite";
+}

@@ -2,6 +2,7 @@ import { Client, Events, GatewayIntentBits } from "discord.js";
 import { getDiscordEnv, getOpenAIEnv } from "./config/env.js";
 import { commandMap } from "./commands/index.js";
 import { ensureStorageFiles } from "./services/context.service.js";
+import { getDatabaseStatus } from "./services/database.service.js";
 import { replyLongText } from "./utils/discord-message.util.js";
 
 const discordEnv = getDiscordEnv();
@@ -13,7 +14,10 @@ const client = new Client({
 
 client.once(Events.ClientReady, (readyClient) => {
   ensureStorageFiles();
+  const databaseStatus = getDatabaseStatus();
+
   console.log(`Bot online como ${readyClient.user.tag}`);
+  console.log(`SQLite em uso: ${databaseStatus.path}`);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

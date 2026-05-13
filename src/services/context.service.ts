@@ -4,6 +4,7 @@ import type { StorageFileKey } from "../types/index.js";
 import {
   ensureDirectory,
   ensureFile,
+  backupFile,
   pathFromRoot,
   readTextFile,
   writeTextFile
@@ -13,6 +14,11 @@ import {
   stripMarkdownCodeFence,
   truncateMarkdown
 } from "../utils/markdown.util.js";
+import {
+  ensureDatabase,
+  readDocument,
+  upsertDocument
+} from "./database.service.js";
 
 export const storagePaths: Record<StorageFileKey, string> = {
   projectContext: pathFromRoot("src", "storage", "project-context.md"),
@@ -23,6 +29,7 @@ export const storagePaths: Record<StorageFileKey, string> = {
 };
 
 const legacyProjectContextPath = pathFromRoot("src", "project-context.md");
+let storageInitialized = false;
 
 const defaultStorageContents: Record<StorageFileKey, string> = {
   projectContext: `# Contexto do Projeto
@@ -78,7 +85,12 @@ Nenhum progresso registrado ainda.
 };
 
 export function ensureStorageFiles(): void {
+  if (storageInitialized) {
+    return;
+  }
+
   ensureDirectory(dirname(storagePaths.projectContext));
+  ensureDatabase();
 
   if (
     existsSync(legacyProjectContextPath) &&
@@ -88,12 +100,35 @@ export function ensureStorageFiles(): void {
   }
 
   for (const [key, filePath] of Object.entries(storagePaths)) {
-    ensureFile(filePath, defaultStorageContents[key as StorageFileKey]);
+    const storageKey = key as StorageFileKey;
+    ensureFile(filePath, defaultStorageContents[storageKey]);
+
+    const databaseContent = readDocument(storageKey);
+
+    if (databaseContent === null) {
+      upsertDocument(
+        storageKey,
+        filenameByStorageKey[storageKey],
+        readTextFile(filePath)
+      );
+      continue;
+    }
+
+    writeTextFile(filePath, databaseContent);
   }
+
+  storageInitialized = true;
 }
 
 export function readStorageFile(key: StorageFileKey): string {
   ensureStorageFiles();
+
+  const databaseContent = readDocument(key);
+
+  if (databaseContent !== null) {
+    return databaseContent;
+  }
+
   return readTextFile(storagePaths[key]);
 }
 
@@ -103,7 +138,13 @@ export function writeStorageFile(
   options?: { backup?: boolean }
 ): void {
   ensureStorageFiles();
-  writeTextFile(storagePaths[key], content, options);
+
+  if (options?.backup) {
+    backupFile(storagePaths[key]);
+  }
+
+  upsertDocument(key, filenameByStorageKey[key], content, options);
+  writeTextFile(storagePaths[key], content);
 }
 
 export function readProjectContext(): string {
@@ -137,3 +178,11 @@ export function buildAiProjectContext(): string {
     })
     .join("\n\n---\n\n");
 }
+
+const filenameByStorageKey: Record<StorageFileKey, string> = {
+  projectContext: "project-context.md",
+  decisions: "decisions.md",
+  tasks: "tasks.md",
+  errors: "errors.md",
+  learningProgress: "learning-progress.md"
+};

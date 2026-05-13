@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tutor IA Monitor</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <section id="login-view" class="login-shell" hidden>
+      <form id="login-form" class="login-panel">
+        <div>
+          <p class="eyebrow">Tutor IA</p>
+          <h1>Monitor</h1>
+        </div>
+        <label class="field">
+          <span>Senha</span>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Entrar</button>
+        <p id="login-error" class="form-error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="dashboard-view" class="dashboard" hidden>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Tutor IA</p>
+          <h1>Monitor</h1>
+        </div>
+        <div class="topbar-actions">
+          <span id="status-pill" class="status-pill neutral">Carregando</span>
+          <button id="refresh-button" class="secondary-button" type="button">Atualizar</button>
+          <button id="logout-button" class="secondary-button" type="button">Sair</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="summary-grid" aria-label="Resumo">
+          <article class="metric-card">
+            <span class="metric-label">Bot</span>
+            <strong id="bot-state">-</strong>
+            <small id="bot-detail">-</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Memoria</span>
+            <strong id="memory-value">-</strong>
+            <small id="memory-detail">-</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Disco</span>
+            <strong id="disk-value">-</strong>
+            <small id="disk-detail">-</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Uptime</span>
+            <strong id="uptime-value">-</strong>
+            <small id="host-detail">-</small>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Containers</h2>
+            <span id="containers-count">0</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Estado</th>
+                  <th>CPU</th>
+                  <th>Memoria</th>
+                  <th>Imagem</th>
+                </tr>
+              </thead>
+              <tbody id="containers-body">
+                <tr>
+                  <td colspan="5">Sem dados</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel logs-panel">
+          <div class="section-heading">
+            <h2>Logs recentes</h2>
+            <span id="logs-count">0</span>
+          </div>
+          <pre id="logs-output">Sem dados</pre>
+        </section>
+      </main>
+    </section>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

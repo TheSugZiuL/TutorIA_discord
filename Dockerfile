@@ -1,11 +1,30 @@
-FROM node:20-slim
+FROM node:24-slim AS deps
 
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
 
-COPY . .
+FROM deps AS build
+
+COPY tsconfig.json ./
+COPY src ./src
 RUN npm run build
 
-CMD ["npm", "start"]
+FROM node:24-slim AS runtime
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/src/storage ./src/storage
+
+RUN mkdir -p context-backups data src/storage \
+  && chown -R node:node /app
+
+USER node
+
+CMD ["node", "dist/bot.js"]
