@@ -14,7 +14,9 @@
     "db:status": "tsx src/diagnose-database.ts",
     "db:status:dist": "node dist/diagnose-database.js",
     "build": "tsc",
-    "start": "node dist/bot.js"
+    "start": "node dist/bot.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "discord.js": "latest",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@types/node": "latest",
     "tsx": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "wrangler": "^4.90.1"
   }
 }
