@@ -7,6 +7,7 @@ const requiredFiles = [
   "index.html",
   "app.js",
   "styles.css",
+  "dataemp-logo-white.png",
   "wrangler.jsonc",
   "src/index.js"
 ];
