@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tutor-monitor-status",
+  "compatibility_date": "2026-05-13",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "monitor-dashboard"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
