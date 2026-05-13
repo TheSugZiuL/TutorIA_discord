@@ -7,12 +7,8 @@ const requiredFiles = [
   "index.html",
   "app.js",
   "styles.css",
-  "_headers",
-  "functions/api/ingest.js",
-  "functions/api/status.js",
-  "functions/api/login.js",
-  "functions/api/logout.js",
-  "functions/api/me.js"
+  "wrangler.jsonc",
+  "src/index.js"
 ];
 
 for (const file of requiredFiles) {
@@ -23,12 +19,10 @@ for (const file of requiredFiles) {
   }
 }
 
-for (const file of requiredFiles.filter((name) => name.startsWith("functions/"))) {
-  const module = await import(pathToFileURL(path.join(root, file)).href);
+const worker = await import(pathToFileURL(path.join(root, "src/index.js")).href);
 
-  if (typeof module.onRequest !== "function") {
-    throw new Error(`${file} must export onRequest`);
-  }
+if (typeof worker.default?.fetch !== "function") {
+  throw new Error("src/index.js must export a default fetch handler");
 }
 
 console.log("monitor-dashboard smoke check passed");

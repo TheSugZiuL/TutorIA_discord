@@ -3,7 +3,7 @@ import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
 const dist = path.join(root, "dist");
-const staticFiles = ["index.html", "app.js", "styles.css", "_headers"];
+const staticFiles = ["index.html", "app.js", "styles.css"];
 
 fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(dist, { recursive: true });

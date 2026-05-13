@@ -14,8 +14,11 @@
     "db:status": "tsx src/diagnose-database.ts",
     "db:status:dist": "node dist/diagnose-database.js",
     "build": "tsc",
+    "build:monitor": "npm --prefix monitor-dashboard run build",
+    "check:monitor": "npm --prefix monitor-dashboard run check",
     "start": "node dist/bot.js",
     "deploy": "wrangler deploy",
+    "deploy:monitor": "npm run build:monitor && wrangler deploy",
     "preview": "wrangler dev"
   },
   "dependencies": {

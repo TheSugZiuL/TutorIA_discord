@@ -1,8 +1,8 @@
-# Monitoramento seguro com Cloudflare Pages
+# Monitoramento seguro com Cloudflare Workers
 
 Este monitor usa um modelo push-only:
 
-- A VM envia status por HTTPS para uma Cloudflare Pages Function.
+- A VM envia status por HTTPS para um Cloudflare Worker.
 - A Cloudflare guarda apenas o ultimo status em Workers KV.
 - O navegador acessa uma tela autenticada por senha.
 - Nenhuma porta da VM precisa ficar aberta para o painel.
@@ -18,7 +18,8 @@ monitor-dashboard
 Ele contem:
 
 - arquivos estaticos: `index.html`, `app.js`, `styles.css`
-- APIs serverless: `functions/api/*`
+- API runtime: `src/index.js`
+- configuracao Worker: `wrangler.jsonc`
 - build sem framework: `npm run build`, gerando `dist`
 
 ## 2. Criar Workers KV
@@ -33,7 +34,7 @@ Na Cloudflare:
 tutor-monitor-status
 ```
 
-Depois, no projeto Pages, adicione o binding:
+Depois, no Worker, adicione o binding:
 
 ```text
 Variable name: MONITOR_STATUS_KV
@@ -65,26 +66,27 @@ MONITOR_DASHBOARD_PASSWORD=
 
 ## 4. Deploy pelo GitHub
 
-No GitHub, confirme que o repositorio tem a pasta `monitor-dashboard`.
+No GitHub, confirme que o repositorio tem a pasta `monitor-dashboard` e o arquivo `wrangler.jsonc` na raiz.
 
 Na Cloudflare:
 
 1. Abra **Workers & Pages**.
 2. Selecione **Create application**.
-3. Escolha **Pages**.
+3. Use **Import a repository**.
 4. Conecte o repositorio do GitHub.
-5. Configure:
+5. Configure o Worker:
 
 ```text
-Project name: tutor-monitor
+Project name: tutor-monitor-status
 Production branch: main
-Root directory: monitor-dashboard
-Framework preset: None
-Build command: npm run build
-Build output directory: dist
+Root directory: deixe vazio ou use a raiz do repositorio
+Build command: npm run build:monitor
+Deploy command: npx wrangler deploy
 ```
 
-Em **Settings > Variables and Secrets**, configure:
+O arquivo `wrangler.jsonc` da raiz informa para a Cloudflare que existe um Worker real em `monitor-dashboard/src/index.js` e que os assets ficam em `monitor-dashboard/dist`.
+
+Em **Settings > Variables and Secrets**, configure os runtime secrets/variables:
 
 ```env
 MONITOR_AGENT_TOKEN=
@@ -105,7 +107,7 @@ Depois faca um novo deploy se os bindings/secrets foram adicionados depois do pr
 
 ## 5. Dominio
 
-No projeto Pages:
+No Worker:
 
 1. Va em **Custom domains**.
 2. Selecione **Set up a domain**.
@@ -120,7 +122,7 @@ Se o DNS do dominio ja esta na Cloudflare, o CNAME costuma ser criado automatica
 ```text
 Type: CNAME
 Name: monitor
-Target: tutor-monitor.pages.dev
+Target: tutor-monitor.<sua-conta>.workers.dev
 Proxy: enabled
 ```
 
@@ -197,3 +199,21 @@ O status fica marcado como desatualizado se a Cloudflare nao receber dados por m
 - Nao coloque tokens em prints, commits ou mensagens.
 - Se `MONITOR_AGENT_TOKEN` vazar, gere outro e atualize a Cloudflare e `/etc/tutor-monitor-agent.env`.
 - Se a senha do painel vazar, altere `MONITOR_DASHBOARD_PASSWORD` na Cloudflare e redeploye.
+
+## 9. Troubleshooting
+
+Se a Cloudflare mostrar:
+
+```text
+Variables cannot be added to a Worker that only has static assets.
+```
+
+O projeto foi detectado como assets estaticos sem Worker runtime. Confirme estes pontos:
+
+- O **Root directory** esta vazio ou apontando para a raiz do repositorio.
+- O arquivo `wrangler.jsonc` existe no commit usado pelo deploy.
+- O `wrangler.jsonc` tem `main: "./monitor-dashboard/src/index.js"`.
+- O deploy command esta como `npx wrangler deploy`.
+- O build command esta como `npm run build:monitor`.
+
+Depois salve as configuracoes e rode um novo deploy. Com `main` definido, a Cloudflare passa a criar um Worker real e libera secrets, variables e bindings.
