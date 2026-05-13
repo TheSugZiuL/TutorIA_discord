@@ -37,7 +37,7 @@ async function request(path, options = {}) {
   const payload = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const error = new Error(payload.error || "Falha na requisicao");
+    const error = new Error(payload.error || "Falha na requisição");
     error.status = response.status;
     throw error;
   }
@@ -180,7 +180,7 @@ function renderStatus(payload) {
 
   const botRunning = status.bot?.state === "running";
   const pillState = payload.stale ? "warn" : botRunning ? "ok" : "bad";
-  const pillLabel = payload.stale ? "Desatualizado" : botRunning ? "Online" : "Atencao";
+  const pillLabel = payload.stale ? "Desatualizado" : botRunning ? "Online" : "Atenção";
   const memory = status.system?.memory || {};
   const disk = status.system?.disk || {};
   const host = status.host || {};
@@ -231,7 +231,7 @@ loginForm.addEventListener("submit", async (event) => {
     await refreshStatus();
     refreshTimer = window.setInterval(refreshStatus, 15000);
   } catch {
-    loginError.textContent = "Senha invalida";
+    loginError.textContent = "Senha inválida";
   }
 });
 
